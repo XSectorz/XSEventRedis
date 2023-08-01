@@ -1,0 +1,9 @@
+net\xsapi\panat\xseventredis\api\XSScore.class
+net\xsapi\panat\xseventredis\configuration\config.class
+net\xsapi\panat\xseventredis\core\core$2.class
+net\xsapi\panat\xseventredis\core\core$1.class
+net\xsapi\panat\xseventredis\api\RedisDataObjectTypeAdapter.class
+net\xsapi\panat\xseventredis\configuration\configLoader.class
+net\xsapi\panat\xseventredis\core\core.class
+net\xsapi\panat\xseventredis\api\RedisDataObject.class
+net\xsapi\panat\xseventredis\api\RedisPlayerData.class

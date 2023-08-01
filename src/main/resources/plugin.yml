@@ -1,0 +1,4 @@
+name: xsEventRedis
+version: '${project.version}'
+main: net.xsapi.panat.xseventredis.core.core
+api-version: 1.20
