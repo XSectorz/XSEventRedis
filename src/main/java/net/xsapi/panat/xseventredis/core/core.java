@@ -109,6 +109,7 @@ public final class core extends JavaPlugin {
         Gson gson = new Gson();
         String jsonString = gson.toJson(scoreRedis);
         sendMessageToRedisAsync("XSEventRedisData/"+ config.customConfig.getString("redis.host-server"),jsonString);
+       // Bukkit.broadcastMessage("Send.... From " + "XSEventRedisData/"+ config.customConfig.getString("redis.host-server"));
     }
 
     private void subscribeToChannelAsync(String channelName) {

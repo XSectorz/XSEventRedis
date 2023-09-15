@@ -1,4 +1,7 @@
-D:\Xsectorz\githubDevelop\xsEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\XSScore.java
-D:\Xsectorz\githubDevelop\xsEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\XSScoreTypeAdapter.java
-D:\Xsectorz\githubDevelop\xsEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\RedisDataObject.java
-D:\Xsectorz\githubDevelop\xsEventRedis\src\main\java\net\xsapi\panat\xseventredis\core\core.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\RedisDataObjectTypeAdapter.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\RedisPlayerData.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\core\core.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\RedisDataObject.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\configuration\config.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\api\XSScore.java
+D:\XSectorZ\GitHubRepoes\XSEventRedis\src\main\java\net\xsapi\panat\xseventredis\configuration\configLoader.java
