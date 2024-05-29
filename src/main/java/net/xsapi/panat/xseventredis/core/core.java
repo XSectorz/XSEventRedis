@@ -20,6 +20,7 @@ import java.util.Map;
 public final class core extends JavaPlugin {
 
     public static HashMap<String,HashMap<String,XSScore>> scoreRedis = new HashMap<>();
+    public static HashMap<String,Integer> tempScoreRedis = new HashMap<>();
     public static HashMap<String,RedisPlayerData> tempObject = new HashMap<>();
     public static core plugin;
 
@@ -56,7 +57,9 @@ public final class core extends JavaPlugin {
         return plugin;
     }
 
-    private void convertToObject(String json) {
+    private void convertToObject(String json,boolean isEnd) {
+        Bukkit.getLogger().info("GET JSON " + json);
+        Bukkit.getLogger().info("-----------------------");
         if (json.isEmpty()) {
             return;
         }
@@ -94,6 +97,29 @@ public final class core extends JavaPlugin {
         } else {
             scoreRedis.put(key,scoreMap);
         }
+
+        if(isEnd) {
+            if(!tempScoreRedis.containsKey(key)) {
+                tempScoreRedis.put(key,1);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        String jsonString = gson.toJson(scoreRedis);
+                        sendMessageToRedisAsync("XSEventRedisDataEnd/"+ config.customConfig.getString("redis.host-server"),key+"<SPLIT>"+jsonString);
+
+                        if(scoreRedis.containsKey(key)) {
+                            if(!scoreRedis.get(key).isEmpty()) {
+                                scoreRedis.remove(key);
+                                tempScoreRedis.remove(key);
+                            }
+                        }
+                    }
+                }, 200L);
+            } else {
+                tempScoreRedis.put(key,tempScoreRedis.get(key)+1);
+            }
+        }
     }
 
     public static void checkData() {
@@ -109,6 +135,7 @@ public final class core extends JavaPlugin {
         Gson gson = new Gson();
         String jsonString = gson.toJson(scoreRedis);
         sendMessageToRedisAsync("XSEventRedisData/"+ config.customConfig.getString("redis.host-server"),jsonString);
+
        // Bukkit.broadcastMessage("Send.... From " + "XSEventRedisData/"+ config.customConfig.getString("redis.host-server"));
     }
 
@@ -153,16 +180,15 @@ public final class core extends JavaPlugin {
                             }
                         } else if(channel.equalsIgnoreCase("XSEventReset/" + config.customConfig.getString("redis.host-server"))) {
                          //   Bukkit.getConsoleSender().sendMessage("Recieved XSEventReset/SyncHost/01 Request ---> " + message);
-                            if(scoreRedis.containsKey(message)) {
-                                if(!scoreRedis.get(message).isEmpty()) {
-                                    scoreRedis.remove(message);
-                                  //  Bukkit.getConsoleSender().sendMessage("RESET!");
-                                }
-                            }
+                            String data = message.split("<SPLIT>")[0];
+                            String idKey = message.split("<SPLIT>")[1];
+
+                            Bukkit.getLogger().info("GET END SIGNAL FROM " + config.customConfig.getString("redis.host-server"));
+                            convertToObject(data,true);
                         } else {
                             for(String server : config.customConfig.getStringList("cross-server.servers")) {
                                 if(channel.equalsIgnoreCase(config.customConfig.getString("redis.host-server") + "/" + server)) {
-                                    convertToObject(message);
+                                    convertToObject(message,false);
                               //      Bukkit.getConsoleSender().sendMessage("Recieved Player Data From ---> " + channel);
                                 }
                             }
