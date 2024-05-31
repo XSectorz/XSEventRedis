@@ -14,6 +14,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public final class core extends JavaPlugin {
     public static HashMap<String,Integer> tempScoreRedis = new HashMap<>();
     public static HashMap<String,RedisPlayerData> tempObject = new HashMap<>();
     public static core plugin;
+    public static ArrayList<Thread> threads = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -52,6 +54,15 @@ public final class core extends JavaPlugin {
         }
 
     }
+
+    @Override
+    public void onDisable() {
+        Bukkit.getConsoleSender().sendMessage("§c[XSEVENTRedis] Plugin Disabled " + Bukkit.getServer().getBukkitVersion());
+        for(Thread thread : threads) {
+            thread.interrupt();
+        }
+    }
+
 
     public static core getPlugin() {
         return plugin;
@@ -110,6 +121,7 @@ public final class core extends JavaPlugin {
 
                         if(scoreRedis.containsKey(key)) {
                             if(!scoreRedis.get(key).isEmpty()) {
+                                Bukkit.getLogger().info("Remove Key: " + key);
                                 scoreRedis.remove(key);
                                 tempScoreRedis.remove(key);
                             }
@@ -144,7 +156,7 @@ public final class core extends JavaPlugin {
         int redisPort = config.customConfig.getInt("redis.port");
         String password = config.customConfig.getString("redis.password");
 
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try (Jedis jedis = new Jedis(redisHost, redisPort)) {
                 if(!password.isEmpty()) {
                     jedis.auth(password);
@@ -152,6 +164,10 @@ public final class core extends JavaPlugin {
                 JedisPubSub jedisPubSub = new JedisPubSub() {
                     @Override
                     public void onMessage(String channel, String message) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            //core.getPlugin().getLogger().info("Redis Guild : Is interrupt");
+                            return;
+                        }
                       //  Bukkit.getConsoleSender().sendMessage("Received data from ---> " + channel);
 
                         if(channel.equalsIgnoreCase("XSEventLogout/Channel/" + config.customConfig.getString("redis.host-server"))) {
@@ -205,7 +221,10 @@ public final class core extends JavaPlugin {
                 // จัดการข้อผิดพลาดที่เกิดขึ้น
                 e.printStackTrace();
             }
-        }).start();
+        });
+        thread.start();
+        threads.add(thread);
+
     }
 
     private void sendMessageToRedisAsync(String CHName, String message) {
