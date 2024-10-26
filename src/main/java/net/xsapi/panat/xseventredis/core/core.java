@@ -69,8 +69,8 @@ public final class core extends JavaPlugin {
     }
 
     private void convertToObject(String json,boolean isEnd) {
-        Bukkit.getLogger().info("GET JSON " + json);
-        Bukkit.getLogger().info("-----------------------");
+        //Bukkit.getLogger().info("GET JSON " + json);
+        //Bukkit.getLogger().info("-----------------------");
         if (json.isEmpty()) {
             return;
         }
@@ -134,14 +134,14 @@ public final class core extends JavaPlugin {
         }
     }
 
-    public static void checkData() {
+    /*public static void checkData() {
         for(Map.Entry<String,HashMap<String,XSScore>> event : scoreRedis.entrySet()) {
            // Bukkit.getConsoleSender().sendMessage("Event : " + event.getKey());
             for(Map.Entry<String,XSScore> score : event.getValue().entrySet()) {
                 Bukkit.broadcastMessage("Player : " + score.getValue().getPlayerName() + ", " + score.getValue().getScore());
             }
         }
-    }
+    }*/
 
     private void sendDataRedisBack() {
         Gson gson = new Gson();
@@ -202,10 +202,12 @@ public final class core extends JavaPlugin {
                             Bukkit.getLogger().info("GET END SIGNAL FROM " + config.customConfig.getString("redis.host-server"));
                             convertToObject(data,true);
                         } else {
-                            for(String server : config.customConfig.getStringList("cross-server.servers")) {
-                                if(channel.equalsIgnoreCase(config.customConfig.getString("redis.host-server") + "/" + server)) {
-                                    convertToObject(message,false);
-                              //      Bukkit.getConsoleSender().sendMessage("Recieved Player Data From ---> " + channel);
+                            if(channel.startsWith(config.customConfig.getString("redis.host-server") + "/")) {
+                                for(String server : config.customConfig.getStringList("cross-server.servers")) {
+                                    if(channel.equalsIgnoreCase(config.customConfig.getString("redis.host-server") + "/" + server)) {
+                                        convertToObject(message,false);
+                                        //      Bukkit.getConsoleSender().sendMessage("Recieved Player Data From ---> " + channel);
+                                    }
                                 }
                             }
                             //Bukkit.getConsoleSender().sendMessage("Recieved Player Data From ---> " + channel);

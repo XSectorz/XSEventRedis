@@ -68,7 +68,7 @@ public class RedisDataObjectTypeAdapter extends TypeAdapter<RedisDataObject> {
         } else {
             out.beginObject();
             out.name("player");
-            out.value(xsScore.getPlayerName());
+            out.value(xsScore.getPlayerUUID());
             out.name("score");
             out.value(xsScore.getScore());
             out.endObject();
@@ -77,13 +77,13 @@ public class RedisDataObjectTypeAdapter extends TypeAdapter<RedisDataObject> {
 
     private XSScore readXSScore(JsonReader in) throws IOException {
         in.beginObject();
-        String playerName = null;
+        String playerUUID = null;
         double score = 0;
 
         while (in.hasNext()) {
             String name = in.nextName();
             if (name.equals("player")) {
-                playerName = in.nextString();
+                playerUUID = in.nextString();
             } else if (name.equals("score")) {
                 score = in.nextDouble();
             } else {
@@ -93,11 +93,11 @@ public class RedisDataObjectTypeAdapter extends TypeAdapter<RedisDataObject> {
 
         in.endObject();
 
-        if (playerName == null) {
+        if (playerUUID == null) {
             throw new IOException("Missing 'player' field in JSON");
         }
 
-        XSScore xsScore = new XSScore(playerName);
+        XSScore xsScore = new XSScore(playerUUID);
         xsScore.setScore(score);
 
         return xsScore;
