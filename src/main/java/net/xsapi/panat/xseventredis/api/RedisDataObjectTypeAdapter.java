@@ -94,7 +94,9 @@ public class RedisDataObjectTypeAdapter extends TypeAdapter<RedisDataObject> {
         in.endObject();
 
         if (playerUUID == null) {
-            throw new IOException("Missing 'player' field in JSON");
+            XSScore errorXSSCore = new XSScore("1619fcf2-d021-3160-8048-e80308b95a5e");
+            errorXSSCore.setScore(1);
+            return errorXSSCore;
         }
 
         XSScore xsScore = new XSScore(playerUUID);
